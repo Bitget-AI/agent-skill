@@ -1,0 +1,11 @@
+node_modules/
+.DS_Store
+.idea/
+.vscode/
+.env
+.env.*
+*.tgz
+*.log
+.changeset/*.md
+!.changeset/README.md
+!.changeset/config.json
