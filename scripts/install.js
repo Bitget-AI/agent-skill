@@ -26,15 +26,15 @@ const HOME = homedir();
 const TARGETS = {
   claude: {
     label: "Claude Code",
-    skillDir: join(HOME, ".claude", "skills", "bitget-skill"),
+    skillDir: join(HOME, ".claude", "skills", "bitget-agent-skill"),
   },
   codex: {
     label: "Codex",
-    skillDir: join(HOME, ".codex", "skills", "bitget-skill"),
+    skillDir: join(HOME, ".codex", "skills", "bitget-agent-skill"),
   },
   openclaw: {
     label: "OpenClaw",
-    skillDir: join(HOME, ".openclaw", "skills", "bitget-skill"),
+    skillDir: join(HOME, ".openclaw", "skills", "bitget-agent-skill"),
   },
 };
 
@@ -164,12 +164,12 @@ async function main() {
   }
   if (selectedKeys.includes("codex")) {
     console.log(
-      "\nCodex: skill will be loaded automatically from ~/.codex/skills/bitget-skill/"
+      "\nCodex: skill will be loaded automatically from ~/.codex/skills/bitget-agent-skill/"
     );
   }
   if (selectedKeys.includes("openclaw")) {
     console.log(
-      "\nOpenClaw: skill will be loaded automatically from ~/.openclaw/skills/bitget-skill/"
+      "\nOpenClaw: skill will be loaded automatically from ~/.openclaw/skills/bitget-agent-skill/"
     );
   }
 }

@@ -1,39 +1,39 @@
-# bitget-skill
+# bitget-agent-skill
 
-[![npm](https://img.shields.io/npm/v/bitget-skill.svg)](https://www.npmjs.com/package/bitget-skill)
+[![npm](https://img.shields.io/npm/v/bitget-agent-skill.svg)](https://www.npmjs.com/package/bitget-agent-skill)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 The **skill surface** of the [Bitget Agent Hub](https://github.com/bitget/agent-hub) — installs an AI skill that teaches Claude Code, Codex, and OpenClaw how to use [`bgc`](https://github.com/bitget/agent-cli) for natural-language Bitget trading.
 
 ```bash
-npm install -g bitget-client    # the bgc CLI it depends on
-npm install -g bitget-skill     # installs the skill into your AI tool
+npm install -g bitget-agent-cli     # the bgc CLI it depends on
+npm install -g bitget-agent-skill   # installs the skill into your AI tool
 ```
 
-The postinstall step writes `SKILL.md` and references into `~/.claude/skills/bitget-skill/` by default.
+The postinstall step writes `SKILL.md` and references into `~/.claude/skills/bitget-agent-skill/` by default.
 
 ## Targets
 
 ```bash
 # Default (Claude Code)
-npm install -g bitget-skill
+npm install -g bitget-agent-skill
 
-# Pick targets explicitly
-node scripts/install.js --target claude
-node scripts/install.js --target claude,codex
-node scripts/install.js --target all
+# Pick targets explicitly (use the bin to redeploy)
+npx bitget-agent-skill --target claude
+npx bitget-agent-skill --target claude,codex
+npx bitget-agent-skill --target all
 
 # Or pick interactively
-node scripts/install.js --interactive
+npx bitget-agent-skill --interactive
 ```
 
 Currently supported skill destinations:
 
-| Target   | Skill location                          |
-|----------|------------------------------------------|
-| Claude Code | `~/.claude/skills/bitget-skill/`     |
-| Codex    | `~/.codex/skills/bitget-skill/`         |
-| OpenClaw | `~/.openclaw/skills/bitget-skill/`      |
+| Target   | Skill location                                |
+|----------|-----------------------------------------------|
+| Claude Code | `~/.claude/skills/bitget-agent-skill/`     |
+| Codex    | `~/.codex/skills/bitget-agent-skill/`         |
+| OpenClaw | `~/.openclaw/skills/bitget-agent-skill/`      |
 
 ## Why a skill (vs. just installing `bgc`)
 
@@ -50,12 +50,12 @@ Result: you say "buy 0.1 BTC at market on Bitget" and it actually works.
 ```
 You → Claude Code / Codex / OpenClaw  (with this skill loaded)
                           ↓
-                       bgc CLI  (bitget-client)
+                       bgc CLI  (bitget-agent-cli)
                           ↓
                        Bitget API
 ```
 
-`bitget-skill` is **runtime-free** — it's pure markdown. The actual API calls go through `bgc`.
+`bitget-agent-skill` is **runtime-free** — it's pure markdown. The actual API calls go through `bgc`.
 
 ## License
 

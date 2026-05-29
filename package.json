@@ -1,33 +1,39 @@
 {
-  "name": "bitget-skill",
+  "name": "bitget-agent-skill",
   "version": "1.2.0",
-  "description": "AI skill that teaches Claude Code, Codex, and OpenClaw how to use the Bitget API via the bgc CLI — natural-language Bitget trading, automatically wired up.",
+  "description": "Official Bitget AI skill — teaches Claude Code, Codex, and OpenClaw how to drive the Bitget API via the bgc CLI for natural-language trading. Auto-installs into your AI tool's skill directory.",
   "type": "module",
   "license": "MIT",
+  "bin": {
+    "bitget-agent-skill": "scripts/install.js"
+  },
   "files": [
     "skills",
     "references",
-    "scripts"
+    "scripts",
+    "CHANGELOG.md",
+    "README.md",
+    "LICENSE"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "gen-references": "node scripts/gen-references.js",
     "prepublishOnly": "node scripts/gen-references.js",
     "postinstall": "node scripts/install.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20.0.0"
   },
   "keywords": [
     "bitget",
+    "bitget-skill",
+    "skill",
     "claude-code",
     "codex",
     "openclaw",
-    "skill",
     "trading",
-    "ai-agent"
+    "crypto",
+    "ai-agent",
+    "natural-language"
   ],
   "homepage": "https://github.com/bitget/agent-hub",
   "repository": {
@@ -36,6 +42,11 @@
   },
   "bugs": {
     "url": "https://github.com/bitget/agent-skill/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/",
+    "provenance": true
   },
   "devDependencies": {
     "bitget-agent-sdk": "^1.2.0"
