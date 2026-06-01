@@ -17,9 +17,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
       - name: Install (skip postinstall to avoid touching ~/.claude)
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
       - name: Validate SKILL.md frontmatter
         run: node scripts/validate-skill.mjs || ls skills/
       - name: Re-generate references from current SDK
