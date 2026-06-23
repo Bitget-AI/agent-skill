@@ -1,0 +1,18 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+devDependencies:
+  '@bitget-ai/bitget-agent-sdk':
+    specifier: ^3.0.0
+    version: 3.0.0
+
+packages:
+
+  /@bitget-ai/bitget-agent-sdk@3.0.0:
+    resolution: {integrity: sha512-/VCwNjpCMO6n22tPCGlJX43Qr0xG8iOz1F/StrefOOMJfBIx+Db2SR1PcoF7DgADktfPF+47Vc8RrkDDGQ/7aQ==}
+    engines: {node: '>=20'}
+    hasBin: true
+    dev: true

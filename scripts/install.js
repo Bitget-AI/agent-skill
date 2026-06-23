@@ -2,14 +2,14 @@
 /**
  * Bitget Skill Installer
  *
- * Usage:
- *   node scripts/install.js                    # postinstall: installs to Claude Code only (non-interactive)
- *   node scripts/install.js --interactive       # interactive: prompts to choose targets
- *   node scripts/install.js --target all        # install to all supported tools
- *   node scripts/install.js --target claude     # install to Claude Code only
- *   node scripts/install.js --target codex      # install to Codex only
- *   node scripts/install.js --target openclaw   # install to OpenClaw only
- *   node scripts/install.js --target claude,codex  # install to multiple targets
+ * Usage (run explicitly — no postinstall side effects):
+ *   npx bitget-agent-skill                     # default: Claude Code only
+ *   npx bitget-agent-skill --interactive       # prompt to choose targets
+ *   npx bitget-agent-skill --target all        # install to all supported tools
+ *   npx bitget-agent-skill --target claude     # Claude Code only
+ *   npx bitget-agent-skill --target codex      # Codex only
+ *   npx bitget-agent-skill --target openclaw   # OpenClaw only
+ *   npx bitget-agent-skill --target claude,codex  # multiple targets
  */
 
 import { copyFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
@@ -38,7 +38,14 @@ const TARGETS = {
   },
 };
 
-const REF_FILES = ["commands.md", "error-codes.md", "auth-setup.md", "demo-trading.md"];
+const REF_FILES = [
+  "commands.md",
+  "discover-guide.md",
+  "trading-safety.md",
+  "error-codes.md",
+  "auth-setup.md",
+  "demo-trading.md",
+];
 
 function installTo(targetKey) {
   const target = TARGETS[targetKey];

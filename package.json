@@ -1,7 +1,8 @@
 {
-  "name": "bitget-agent-skill",
-  "version": "1.2.0",
-  "description": "Official Bitget AI skill — teaches Claude Code, Codex, and OpenClaw how to drive the Bitget API via the bgc CLI for natural-language trading. Auto-installs into your AI tool's skill directory.",
+  "name": "@bitget-ai/bitget-agent-skill",
+  "version": "3.0.0",
+  "packageManager": "pnpm@8.14.1",
+  "description": "Official Bitget AI skill — teaches Claude Code, Codex, and OpenClaw when and how to drive the Bitget Unified Trading Account (UTA / v3) API through the `bgc` CLI from natural language. Run `npx @bitget-ai/bitget-agent-skill` to deploy into your AI tool's skill directory.",
   "type": "module",
   "license": "MIT",
   "bin": {
@@ -13,12 +14,15 @@
     "scripts",
     "CHANGELOG.md",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "VERSION"
   ],
   "scripts": {
     "gen-references": "node scripts/gen-references.js",
-    "prepublishOnly": "node scripts/gen-references.js",
-    "postinstall": "node scripts/install.js"
+    "install-skill": "node scripts/install.js",
+    "e2e:real": "node e2e/run.mjs",
+    "e2e:agent": "node e2e/agent/run.mjs",
+    "prepublishOnly": "node scripts/gen-references.js"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -35,20 +39,11 @@
     "ai-agent",
     "natural-language"
   ],
-  "homepage": "https://github.com/bitget/agent-hub",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bitget/agent-skill.git"
-  },
-  "bugs": {
-    "url": "https://github.com/bitget/agent-skill/issues"
-  },
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org/",
-    "provenance": true
+    "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "bitget-agent-sdk": "^1.2.0"
+    "@bitget-ai/bitget-agent-sdk": "^3.0.0"
   }
 }
