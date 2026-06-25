@@ -27,7 +27,7 @@
 
 ---
 
-> **Bitget Agent Hub** is Bitget's official open-source AI Agent ecosystem. This repository is `bitget-agent-skill` — the **skill surface** that teaches terminal AI agents when and how to correctly invoke Bitget tools. Ecosystem packages: [agent-skill](https://github.com/Bitget-AI/agent-skill) (this repo), [agent-cli](https://github.com/Bitget-AI/agent-cli), [agent-mcp](https://github.com/Bitget-AI/agent-mcp), [agent-sdk](https://github.com/Bitget-AI/agent-sdk), [bitget-signal](https://github.com/Bitget-AI/bitget-signal), [agent-hub](https://github.com/Bitget-AI/agent-hub).
+> **Bitget Agent Hub** is Bitget's official open-source AI Agent ecosystem. This repository is `bitget-agent-skill` — the **skill surface** that teaches terminal AI agents when and how to correctly invoke Bitget tools. Ecosystem packages: [agent-skill](https://github.com/Bitget-AI/agent-skill) (this repo), [agent-cli](https://github.com/Bitget-AI/agent-cli), [agent-mcp](https://github.com/Bitget-AI/agent-mcp), [agent-sdk](https://github.com/Bitget-AI/agent-sdk), [bitget-signal](https://github.com/Bitget-AI/bitget-signal), [agent_hub](https://github.com/Bitget-AI/agent_hub).
 
 `@bitget-ai/bitget-agent-skill` is Bitget's official AI trading skill file, giving Claude Code, Codex, and OpenClaw the judgment to use Bitget tools correctly — knowing when to invoke Bitget, how to break your intent into the right multi-step operations, how to handle confirmation before write actions, and what to do when something goes wrong. Pure markdown, runtime-free.
 
@@ -62,7 +62,7 @@ graph LR
 Without the skill, `bgc` executes one command at a time. With the skill loaded, the AI can chain your intent into a sequence of operations across modules — check positions, evaluate conditions, place the order, handle the result — all in one go.
 
 - **Trigger recognition in English and Chinese**: whether you say "buy BTC at market" or「帮我买 BTC」, the AI recognizes it as a Bitget trading instruction and calls the right tool automatically — no need to specify command syntax
-- **v3 grammar and full reference**: the skill file includes the `bgc` v3 grammar (`bgc <tool> --action <name>`) and an auto-generated catalog of all 109 operations — the AI knows which intent verb maps to which operation and how to fill in the parameters
+- **v3 grammar and full reference**: the skill file includes the `bgc` v3 grammar (`bgc <tool> --action <name>`) and an auto-generated catalog of every operation — the AI knows which intent verb maps to which operation and how to fill in the parameters
 - **Multi-step workflow**: "check my positions, and if I have no BTC open a 10x long" — the AI queries first, reasons, then places the order, showing `[CAUTION]` before every write operation and waiting for your confirmation
 - **Paper trading and error handling**: tell the AI "use demo account" to switch to Bitget's sandbox automatically; when API errors occur, the AI knows whether to retry or surface the issue to you — instead of getting stuck
 
@@ -70,12 +70,12 @@ Without the skill, `bgc` executes one command at a time. With the skill loaded, 
 
 ## Why a Skill (vs. just installing `bgc`)
 
-The CLI alone gives the AI 16 intent verbs over the Unified Trading Account (109 operations) but no semantics — the assistant doesn't know **when** to reach for Bitget, **which** verb to use, or **how** to drive it safely.
+The CLI alone gives the AI 14 intent verbs over the Unified Trading Account (89 operations) but no semantics — the assistant doesn't know **when** to reach for Bitget, **which** verb to use, or **how** to drive it safely.
 
 The skill adds:
 
 - A **trigger description** so Claude Code / Codex / OpenClaw automatically invokes the skill on any Bitget-relevant request — including casual phrasings (*"buy 0.1 BTC at market"*) and Chinese (*"查看我的持仓"*).
-- The **v3 grammar** (`bgc <tool> --action <name> --<param> <value>`) and a **discover-first** workflow, plus a complete catalog of every verb, action, and parameter auto-generated from the SDK.
+- The **v3 grammar** (`bgc <tool> --action <name> --<param> <value>`) and a **discover-first** workflow, plus a complete catalog of every verb, action, and parameter.
 - **Operational guidance** for write-safety (`--dry-run` / `--confirm`), close-direction rules, demo trading, error categories, and auth setup.
 
 Result: you say *"buy 0.1 BTC at market on Bitget"* and it actually works — the assistant composes `bgc order --action place --category SPOT --symbol BTCUSDT --side buy --orderType market --qty 0.1`, previews it with `--dry-run`, confirms with you, then runs it.
@@ -86,9 +86,9 @@ Result: you say *"buy 0.1 BTC at market on Bitget"* and it actually works — th
 
 | File | Purpose |
 |---|---|
-| `SKILL.md` | Top-level skill definition with trigger phrases (English + Chinese) so the AI knows when to invoke, plus the v3 grammar, the 16-verb map, and the write-safety workflow. |
+| `SKILL.md` | Top-level skill definition with trigger phrases (English + Chinese) so the AI knows when to invoke, plus the v3 grammar, the 14-verb map, and the write-safety workflow. |
 | `references/commands.md` | Auto-generated static catalog — every domain, verb, action, and parameter (with enums + descriptions), from the SDK's own `discover` surface. |
-| `references/discover-guide.md` | How to navigate the live surface with `bgc discover` (the four rungs, search, `raw`, hidden modules). |
+| `references/discover-guide.md` | How to navigate the live surface with `bgc discover` (the four rungs, search, `raw`). |
 | `references/trading-safety.md` | Close-direction rules (one-way/hedge), TP/SL, `qty` units, cancel-all, and withdrawal safety. |
 | `references/auth-setup.md` | How to create a Bitget API key and configure environment variables. |
 | `references/demo-trading.md` | How to use `--paper-trading` for safe rehearsal. |
@@ -250,6 +250,6 @@ MIT-licensed and free to use.
 
 ---
 
-<sub>Part of the **[Bitget Agent Hub](https://github.com/Bitget-AI/agent-hub)** ecosystem — the official open-source AI Agent ecosystem from Bitget.<br/>
+<sub>Part of the **[Bitget Agent Hub](https://github.com/Bitget-AI/agent_hub)** ecosystem — the official open-source AI Agent ecosystem from Bitget.<br/>
 Trading Stack · Skill Surface. ⚠️ Trading cryptocurrency carries risk; you are responsible for any orders your AI agent places. Use demo account to practice safely before trading with real funds.<br/>
 Foundation: [agent-sdk](https://github.com/Bitget-AI/agent-sdk) · Execution: [agent-cli](https://github.com/Bitget-AI/agent-cli) · Desktop: [agent-mcp](https://github.com/Bitget-AI/agent-mcp) · Market signals: [bitget-signal](https://github.com/Bitget-AI/bitget-signal)</sub>

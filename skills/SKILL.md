@@ -46,7 +46,7 @@ transfers, withdrawals) needs API credentials as environment variables. See
 bgc <tool> [--action <name>] [--<param> <value> ...] [global flags]
 ```
 
-- **One verb per call.** There are 16 intent verbs (e.g. `market`, `order`,
+- **One verb per call.** There are 14 intent verbs (e.g. `market`, `order`,
   `position`, `account_overview`, `transfer_funds`, `withdraw`).
 - **`--action`** picks the intent for an action-routed verb
   (`bgc order --action place`, `bgc position --action closeAll`).
@@ -90,7 +90,7 @@ On error, branch on `error.category`: `auth`/`param` → fix the request and res
 `balance`/`risk` → surface to the user (cannot self-heal); `rate`/`network` → back
 off and retry; `config` → check account mode / credentials. See `references/error-codes.md`.
 
-## The 16 verbs
+## The 14 verbs
 
 | Domain | Verb | Use for |
 |--------|------|---------|
@@ -108,8 +108,6 @@ off and retry; `config` → check account mode / credentials. See `references/er
 | subaccount | `subaccount` | Create/list sub-accounts, manage their API keys & assets |
 | loan | `loan` | Crypto loans: borrow, repay, orders, collateral |
 | tax | `tax` | Tax/transaction records |
-| broker | `broker` | *(hidden, to-B)* Broker sub-accounts & API keys — opt in: `--modules broker` |
-| instloan | `inst_loan` | *(hidden, to-B)* Institutional loans — opt in: `--modules instloan` |
 
 Use `discover` for the actions and exact params of any verb.
 

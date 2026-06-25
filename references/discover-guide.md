@@ -73,7 +73,7 @@ bgc discover --search withdraw
 
 ## Widening the surface
 
-By default the CLI exposes `--modules all` at the **intent** surface (the 16 curated
+By default the CLI exposes `--modules all` at the **intent** surface (the 14 curated
 verbs). Two ways to see more:
 
 - **Hidden to-B modules** (`broker`, `inst_loan`) are NOT in `all` — name them

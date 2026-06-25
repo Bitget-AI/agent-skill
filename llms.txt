@@ -1,44 +1,53 @@
 # bitget-agent-skill
 
-Official Bitget AI trading skill file for Claude Code, Codex, and OpenClaw. Gives terminal AI agents the judgment to understand natural language trading instructions — when to call Bitget, how to build multi-step operations, how to confirm before write actions, and how to handle errors. Must be installed alongside bitget-agent-cli.
+Official Bitget AI trading skill file for Claude Code, Codex, and OpenClaw. Pure-Markdown skill files that give terminal AI agents the judgment to understand natural-language trading instructions — when to call Bitget, how to build multi-step operations, how to confirm before write actions, and how to handle errors. Must be installed alongside `bitget-agent-cli` (the `bgc` CLI).
 
 ## Installation
 npx @bitget-ai/bitget-agent-skill --target all
 
-Deploys skill files to Claude Code (~/.claude/skills/), Codex (~/.codex/skills/), and OpenClaw (~/.openclaw/skills/) simultaneously.
+Deploys skill files to Claude Code (`~/.claude/skills/bitget-agent-skill/`), Codex (`~/.codex/skills/bitget-agent-skill/`), and OpenClaw (`~/.openclaw/skills/bitget-agent-skill/`) simultaneously. Use `--target claude` or `--target codex` for a specific tool, or `--interactive` to choose.
 
 ## Key facts
-- Teaches the AI v3 grammar (bgc <tool> --action <name>) and provides an auto-generated catalog of all 109 operations — the AI knows which intent verb maps to which operation and how to fill in the parameters
-- Recognizes trading intent in both English and Chinese; triggers on phrases like "buy BTC", "check my positions", or Chinese equivalents without requiring explicit command syntax
-- Enables multi-step workflows: check position → evaluate condition → place order → handle result — all in one go; high-risk write operations require --confirm before execution
-- Supports automatic switching to Bitget demo environment when asked; AI knows whether to retry or surface the issue when API errors occur
-- Skill files are pure Markdown with no runtime process, no API key, and no network access; all security is handled by bgc at execution time
+- Teaches the AI the v3 grammar (`bgc <tool> --action <name>`) and provides an auto-generated static catalog of every operation (`references/commands.md`) — the AI knows which intent verb maps to which operation and how to fill in the parameters. The skill covers 14 curated intent verbs.
+- Recognizes trading intent in both English and Chinese; triggers on phrases like "buy BTC", "check my positions", or「帮我买 BTC」 without requiring explicit command syntax.
+- Enables multi-step workflows: check position → evaluate condition → place order → handle result — all in one go. Before every write, the AI shows a `[CAUTION]` annotation and waits for your confirmation.
+- Distinguishes two "confirms": (1) user confirmation before ANY write — the AI's behavior, not a flag; (2) the `--confirm` CLI flag — required only for high-risk ops like `cancelAllOrders`, `closeAllPositions`, and `withdrawal`.
+- Supports automatic switching to Bitget's demo environment when asked ("use demo account"); the AI knows whether to retry or surface the issue when API errors occur, branching on `error.category`.
+- Skill files are pure Markdown with no runtime process, no API key, and no network access. All security is handled by `bgc` at execution time.
 
 ## FAQ
 
 Q: What is bitget-agent-skill and why do I need it?
-A: bitget-agent-skill is Bitget's official AI trading skill file, giving Claude Code, Codex, and OpenClaw the judgment to use Bitget tools correctly — knowing when to invoke Bitget, how to break user intent into the right multi-step operations, how to confirm before write actions, and how to handle errors. Without it, the AI has the bgc tool but lacks the reasoning to drive it correctly.
+A: Bitget's official AI trading skill file, giving Claude Code, Codex, and OpenClaw the judgment to use Bitget tools correctly — knowing when to invoke Bitget, how to break user intent into the right multi-step operations, how to confirm before write actions, and how to handle errors. Without it, the AI has the `bgc` tool but lacks the reasoning to drive it correctly.
 
 Q: What is the relationship between this skill and the bgc CLI?
-A: Both must be installed together. bgc (bitget-agent-cli) is the execution layer that makes actual Bitget API requests; the skill file is the AI's instruction manual that tells it when to call bgc, how to fill in parameters, how to confirm write operations, and how to handle errors. Without bgc, the AI has learned the skill but cannot execute anything. bgc is installed globally with npm install -g so it stays on $PATH; the skill is deployed once with npx, which always pulls the latest version — effectively auto-upgrading on each run.
+A: Both must be installed together. `bgc` (`bitget-agent-cli`) is the execution layer that makes actual Bitget API requests; the skill file is the AI's instruction manual. Without `bgc`, the AI has learned the skill but cannot execute anything. `bgc` is installed globally with `npm install -g` so it stays on `$PATH`; the skill is deployed once with `npx`, which always pulls the latest version.
 
 Q: What's the difference between this and the MCP server? Which should I install?
-A: If you use a terminal-based AI (Claude Code, Codex), install bitget-agent-skill + bgc. If you use a desktop AI (Claude Desktop, Cursor), install bitget-agent-mcp. Both enable natural language Bitget trading — they adapt to different AI environments.
+A: If you use a terminal-based AI (Claude Code, Codex, OpenClaw), install `bitget-agent-skill` + `bgc`. If you use a desktop AI (Claude Desktop, Cursor), install `bitget-agent-mcp`. Both enable natural-language Bitget trading — they adapt to different AI environments.
 
 Q: How do I confirm my AI has actually learned the skill?
-A: Ask your AI: "What trading modules does Bitget support?" If it returns the correct module list (market, trade, account, etc.), the skill is loaded and active. You can also run bgc discover directly to see all loaded verbs.
+A: Ask your AI: "What trading modules does Bitget support?" If it returns the correct module list (market, trade, account, funds, subaccount, loan, tax), the skill is loaded. You can also run `bgc discover` directly to see the live surface.
 
 Q: Will the AI automatically place orders after the skill is installed?
-A: No. For write operations like placing orders or transferring funds, the AI displays a [CAUTION] annotation and waits for your confirmation before executing.
+A: No. For write operations like placing orders or transferring funds, the AI displays a `[CAUTION]` annotation and waits for your confirmation before executing.
 
 Q: How do I trade without real money?
-A: Tell your AI "use demo account" or "use paper trading" — it will switch to Bitget's Demo Trading environment automatically. Requires creating a Demo API Key in advance and setting it as an environment variable.
+A: Tell your AI "use demo account" or "use paper trading" — it will switch to Bitget's Demo Trading environment automatically. Requires creating a Demo API Key in advance and setting it as your environment variables.
 
 Q: Does the skill file require an API key or network access?
-A: No. The skill files are pure Markdown with no runtime process, no API key, and no network access. Actual API calls happen at execution time through bgc — credentials are passed via environment variables.
+A: No. The skill files are pure Markdown with no runtime process, no API key, and no network access. Actual API calls happen at execution time through `bgc` — credentials are passed via environment variables.
 
 Q: Is it free?
 A: MIT-licensed and free to use.
 
 Q: How do I update?
-A: Run npx @bitget-ai/bitget-agent-installer upgrade-all --target all, or update directly with npx @bitget-ai/bitget-agent-skill@latest.
+A: `npx @bitget-ai/bitget-agent-skill@latest --target all`. Or use `npx @bitget-ai/bitget-agent-installer upgrade-all --target all` to update the whole ecosystem.
+
+## Optional
+- [README](README.md): full skill-file inventory, installation, troubleshooting
+- [skills/SKILL.md](skills/SKILL.md): the top-level skill definition (the AI reads this)
+- [references/commands.md](references/commands.md): auto-generated catalog of every verb, action, and parameter
+- [references/discover-guide.md](references/discover-guide.md): how to navigate the live surface with `bgc discover`
+- [bitget-agent-cli](https://github.com/Bitget-AI/agent-cli): the paired `bgc` CLI (required)
+- [CHANGELOG](CHANGELOG.md): release history
