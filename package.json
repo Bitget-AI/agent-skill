@@ -1,6 +1,6 @@
 {
   "name": "@bitget-ai/bitget-agent-skill",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "packageManager": "pnpm@8.14.1",
   "description": "Official Bitget AI skill — teaches Claude Code, Codex, and OpenClaw when and how to drive the Bitget Unified Trading Account (UTA / v3) API through the `bgc` CLI from natural language. Run `npx @bitget-ai/bitget-agent-skill` to deploy into your AI tool's skill directory.",
   "type": "module",

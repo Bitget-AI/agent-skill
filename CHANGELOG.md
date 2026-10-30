@@ -5,13 +5,18 @@ All notable changes to `bitget-agent-skill` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.4.1] - 2026-10-30
+
+### Fixed
+- **`bitget-agentic` / `bitget-agentic-connect`** — clarify `mcp_auth` is client-side OAuth (not a server tool); login check uses `getAccountAssets` / `getDeductInfo`; add `guide` → `do_query` / `do_request_open_api` workflow; Claude Code add uses `-s user`; drop hard-coded third-party datahub URL and refresh-token TTL; connect skill is first-time only and defers to local agentic after setup.
+
 ## [3.4.0] - 2026-10-30
 
 ### Added
 - **`bitget-agentic-connect` skill** — first-time guide to install the local Agentic skill, connect remote MCP `https://agent.bitget.com/mcp`, run legacy MCP/API-key checks, and complete browser OAuth. Install with `--skill agentic-connect`.
 
 ### Changed
-- **`bitget-agentic` skill → 2.2.3** — rewritten for the cloud HTTP MCP (`guide` / `do_query` / `do_request_open_api` / `mcp_auth`), legacy stdio MCP upgrade path, Cursor `CLIENT_ID`, and re-auth / trading / disconnect rules. No longer documents the old local `@bitget-ai/bitget-agent-mcp` OAuth flow.
+- **`bitget-agentic` skill → 2.2.3** — rewritten for the cloud HTTP MCP (`guide` / `do_query` / `do_request_open_api`), legacy stdio MCP upgrade path, Cursor `CLIENT_ID`, and re-auth / trading / disconnect rules. No longer documents the old local `@bitget-ai/bitget-agent-mcp` OAuth flow.
 
 ## [3.3.1] - 2026-09-20
 
