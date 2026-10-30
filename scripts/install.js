@@ -3,13 +3,17 @@
  * Bitget Skill Installer
  *
  * Usage (run explicitly — no postinstall side effects):
- *   npx bitget-agent-skill                     # default: Claude Code only
- *   npx bitget-agent-skill --interactive       # prompt to choose targets
- *   npx bitget-agent-skill --target all        # install to all supported tools
- *   npx bitget-agent-skill --target claude     # Claude Code only
- *   npx bitget-agent-skill --target codex      # Codex only
- *   npx bitget-agent-skill --target openclaw   # OpenClaw only
- *   npx bitget-agent-skill --target claude,codex  # multiple targets
+ *   npx bitget-agent-skill                          # default: uta skill, Claude Code only
+ *   npx bitget-agent-skill --interactive            # prompt to choose targets
+ *   npx bitget-agent-skill --target all             # install to all supported tools
+ *   npx bitget-agent-skill --target claude          # Claude Code only
+ *   npx bitget-agent-skill --target codex           # Codex only
+ *   npx bitget-agent-skill --target openclaw        # OpenClaw only
+ *   npx bitget-agent-skill --target claude,codex    # multiple targets
+ *   npx bitget-agent-skill --skill agentic          # install the Agentic (OAuth) skill instead
+ *   npx bitget-agent-skill --skill agentic-connect  # first-time cloud MCP connect guide
+ *   npx bitget-agent-skill --skill uta,agentic      # install both skills
+ *   npx bitget-agent-skill --skill all              # install all skills
  */
 
 import { copyFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
@@ -22,49 +26,74 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const PKG_ROOT = join(__dirname, "..");
 const HOME = homedir();
 
+// Installable skills — each copies its own SKILL.md (and optional reference
+// files) into a per-skill subdirectory under the AI tool's skills root.
+const SKILLS = {
+  uta: {
+    label: "UTA trading (manual API key)",
+    skillSrcDir: join(PKG_ROOT, "skills", "uta"),
+    skillDirName: "bitget-agent-skill",
+    refFiles: [
+      "commands.md",
+      "discover-guide.md",
+      "trading-safety.md",
+      "error-codes.md",
+      "auth-setup.md",
+      "demo-trading.md",
+    ],
+  },
+  agentic: {
+    label: "Agentic sub-account (OAuth)",
+    skillSrcDir: join(PKG_ROOT, "skills", "agentic"),
+    skillDirName: "bitget-agentic",
+    refFiles: [],
+  },
+  "agentic-connect": {
+    label: "Agentic first-time MCP connect guide",
+    skillSrcDir: join(PKG_ROOT, "skills", "agentic-connect"),
+    skillDirName: "bitget-agentic-connect",
+    refFiles: [],
+  },
+};
+
 // Skill destinations per AI tool
 const TARGETS = {
   claude: {
     label: "Claude Code",
-    skillDir: join(HOME, ".claude", "skills", "bitget-agent-skill"),
+    skillsRoot: join(HOME, ".claude", "skills"),
   },
   codex: {
     label: "Codex",
-    skillDir: join(HOME, ".codex", "skills", "bitget-agent-skill"),
+    skillsRoot: join(HOME, ".codex", "skills"),
   },
   openclaw: {
     label: "OpenClaw",
-    skillDir: join(HOME, ".openclaw", "skills", "bitget-agent-skill"),
+    skillsRoot: join(HOME, ".openclaw", "skills"),
   },
 };
 
-const REF_FILES = [
-  "commands.md",
-  "discover-guide.md",
-  "trading-safety.md",
-  "error-codes.md",
-  "auth-setup.md",
-  "demo-trading.md",
-];
-
-function installTo(targetKey) {
+function installTo(targetKey, skillKey) {
   const target = TARGETS[targetKey];
-  const refsDir = join(target.skillDir, "references");
+  const skill = SKILLS[skillKey];
+  const skillDir = join(target.skillsRoot, skill.skillDirName);
+  const refsDir = join(skillDir, "references");
 
-  mkdirSync(target.skillDir, { recursive: true });
-  mkdirSync(refsDir, { recursive: true });
+  mkdirSync(skillDir, { recursive: true });
 
-  const skillSrc = join(PKG_ROOT, "skills", "SKILL.md");
-  copyFileSync(skillSrc, join(target.skillDir, "SKILL.md"));
+  const skillSrc = join(skill.skillSrcDir, "SKILL.md");
+  copyFileSync(skillSrc, join(skillDir, "SKILL.md"));
 
-  for (const f of REF_FILES) {
-    const src = join(PKG_ROOT, "references", f);
-    if (existsSync(src)) {
-      copyFileSync(src, join(refsDir, f));
+  if (skill.refFiles.length > 0) {
+    mkdirSync(refsDir, { recursive: true });
+    for (const f of skill.refFiles) {
+      const src = join(PKG_ROOT, "references", f);
+      if (existsSync(src)) {
+        copyFileSync(src, join(refsDir, f));
+      }
     }
   }
 
-  console.log(`  ✓ ${target.label} → ${join(target.skillDir, "SKILL.md")}`);
+  console.log(`  ✓ ${target.label} (${skill.label}) → ${join(skillDir, "SKILL.md")}`);
 }
 
 async function promptTargets() {
@@ -73,7 +102,7 @@ async function promptTargets() {
   console.log("\nBitget Skill — choose installation targets:\n");
   const keys = Object.keys(TARGETS);
   keys.forEach((k, i) => {
-    console.log(`  ${i + 1}. ${TARGETS[k].label}  (${TARGETS[k].skillDir})`);
+    console.log(`  ${i + 1}. ${TARGETS[k].label}  (${TARGETS[k].skillsRoot})`);
   });
   console.log(`  ${keys.length + 1}. All of the above`);
   console.log();
@@ -103,48 +132,48 @@ async function promptTargets() {
   });
 }
 
+function parseListFlag(args, name, validKeys) {
+  const arg = args.find((a) => a.startsWith(`--${name}=`) || a === `--${name}`);
+  if (!arg) return null;
+  const value =
+    arg === `--${name}` ? args[args.indexOf(`--${name}`) + 1] : arg.split("=")[1];
+  if (!value) return null;
+  if (value === "all") return Object.keys(validKeys);
+  const keys = value
+    .split(",")
+    .map((s) => s.trim())
+    .filter((k) => k in validKeys);
+  if (keys.length === 0) {
+    console.warn(
+      `Unknown ${name}(s): ${value}. Valid: ${Object.keys(validKeys).join(", ")}, all`
+    );
+    process.exit(1);
+  }
+  return keys;
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const isInteractive = args.includes("--interactive");
-  const targetArg = args.find((a) => a.startsWith("--target=") || a === "--target");
-  let targetValue = null;
-  if (targetArg) {
-    if (targetArg === "--target") {
-      targetValue = args[args.indexOf("--target") + 1];
-    } else {
-      targetValue = targetArg.split("=")[1];
-    }
-  }
+  const targetValue = parseListFlag(args, "target", TARGETS);
+  const skillValue = parseListFlag(args, "skill", SKILLS);
 
-  let selectedKeys;
+  let selectedTargetKeys;
+  const selectedSkillKeys = skillValue || ["uta"];
 
   if (isInteractive) {
     // Interactive mode — prompt user
     try {
-      selectedKeys = await promptTargets();
+      selectedTargetKeys = await promptTargets();
     } catch {
-      selectedKeys = ["claude"];
+      selectedTargetKeys = ["claude"];
     }
   } else if (targetValue) {
-    // --target flag
-    if (targetValue === "all") {
-      selectedKeys = Object.keys(TARGETS);
-    } else {
-      selectedKeys = targetValue
-        .split(",")
-        .map((s) => s.trim())
-        .filter((k) => k in TARGETS);
-      if (selectedKeys.length === 0) {
-        console.warn(
-          `Unknown target(s): ${targetValue}. Valid targets: ${Object.keys(TARGETS).join(", ")}, all`
-        );
-        process.exit(1);
-      }
-    }
+    selectedTargetKeys = targetValue;
   } else {
-    // Default postinstall: Claude Code only, silent on failure
+    // Default postinstall: Claude Code, uta skill only, silent on failure
     try {
-      installTo("claude");
+      installTo("claude", "uta");
     } catch (err) {
       console.warn("Could not auto-install skill:", err.message);
     }
@@ -153,31 +182,30 @@ async function main() {
 
   console.log("\nInstalling Bitget skill...");
   let ok = 0;
-  for (const key of selectedKeys) {
-    try {
-      installTo(key);
-      ok++;
-    } catch (err) {
-      console.warn(`  ✗ ${TARGETS[key].label}: ${err.message}`);
+  const total = selectedTargetKeys.length * selectedSkillKeys.length;
+  for (const targetKey of selectedTargetKeys) {
+    for (const skillKey of selectedSkillKeys) {
+      try {
+        installTo(targetKey, skillKey);
+        ok++;
+      } catch (err) {
+        console.warn(`  ✗ ${TARGETS[targetKey].label} (${SKILLS[skillKey].label}): ${err.message}`);
+      }
     }
   }
-  console.log(`\nDone — installed to ${ok} of ${selectedKeys.length} targets.`);
+  console.log(`\nDone — installed ${ok} of ${total} target/skill combinations.`);
 
-  if (selectedKeys.includes("claude")) {
+  if (selectedTargetKeys.includes("claude")) {
     console.log(
       "\nClaude Code: restart Claude Code to pick up the skill, or run:\n" +
         "  claude skills list"
     );
   }
-  if (selectedKeys.includes("codex")) {
-    console.log(
-      "\nCodex: skill will be loaded automatically from ~/.codex/skills/bitget-agent-skill/"
-    );
+  if (selectedTargetKeys.includes("codex")) {
+    console.log("\nCodex: skill will be loaded automatically from ~/.codex/skills/");
   }
-  if (selectedKeys.includes("openclaw")) {
-    console.log(
-      "\nOpenClaw: skill will be loaded automatically from ~/.openclaw/skills/bitget-agent-skill/"
-    );
+  if (selectedTargetKeys.includes("openclaw")) {
+    console.log("\nOpenClaw: skill will be loaded automatically from ~/.openclaw/skills/");
   }
 }
 

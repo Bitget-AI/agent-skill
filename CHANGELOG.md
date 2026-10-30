@@ -5,6 +5,47 @@ All notable changes to `bitget-agent-skill` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.4.1] - 2026-10-30
+
+### Fixed
+- **`bitget-agentic` / `bitget-agentic-connect`** — clarify `mcp_auth` is client-side OAuth (not a server tool); login check uses `getAccountAssets` / `getDeductInfo`; add `guide` → `do_query` / `do_request_open_api` workflow; Claude Code add uses `-s user`; drop hard-coded third-party datahub URL and refresh-token TTL; connect skill is first-time only and defers to local agentic after setup.
+
+## [3.4.0] - 2026-10-30
+
+### Added
+- **`bitget-agentic-connect` skill** — first-time guide to install the local Agentic skill, connect remote MCP `https://agent.bitget.com/mcp`, run legacy MCP/API-key checks, and complete browser OAuth. Install with `--skill agentic-connect`.
+
+### Changed
+- **`bitget-agentic` skill → 2.2.3** — rewritten for the cloud HTTP MCP (`guide` / `do_query` / `do_request_open_api`), legacy stdio MCP upgrade path, Cursor `CLIENT_ID`, and re-auth / trading / disconnect rules. No longer documents the old local `@bitget-ai/bitget-agent-mcp` OAuth flow.
+
+## [3.3.1] - 2026-09-20
+
+### Fixed
+- **`bitget-agentic` skill §6 optional MCP setup** — replaced the `upgrade-all` Skill Hub installer guidance (which pulls in `bitget-signal`/datahub) with the correct two-package split: A) `bitget-agent-cli` (`bgc`) + `bitget-agent-skill` (UTA skill) upgraded individually, no signal; B) cloud Market MCP (HTTP), unchanged. Aligned with the official onboarding guide's Step 1b.
+
+## [3.3.0] - 2026-09-17
+
+### Added
+- **`bitget-agentic` skill — network/proxy troubleshooting (§5)** — Agent must recognize bitget.com connectivity failures (timeout/ECONNREFUSED/ENOTFOUND/etc.), probe for a local proxy/VPN, and route through it before retrying OAuth; added boundary case R (regional network unreachable).
+- **`bitget-agentic` skill — optional MCP setup (§6)** — guidance for installing the no-key Skill Hub installer and the cloud Market MCP (HTTP transport) alongside the trading MCP.
+
+### Changed
+- `bitget-agentic` skill's 禁止 list (renumbered §5 → §7) gains a new prohibition: retrying OAuth repeatedly without first diagnosing the network.
+
+## [3.2.1] - 2026-09-02
+
+### Fixed
+- **`scripts/install.js` missing executable bit** — the file shipped as `644` in the published tarball, so npm's `bin` symlink failed with `command not found` on `npx`/global install. Restored the executable bit. Pre-existing since 1.2.0; discovered while verifying 3.2.0 end to end.
+
+## [3.2.0] - 2026-09-02
+
+### Added
+- **`bitget-agentic` skill** — OAuth-based Bitget Agentic account skill, merged into this package alongside the existing UTA skill. Install with `--skill agentic` (or `--skill all` for both); default remains the UTA skill only, unchanged for existing users.
+- **`scripts/install.js` `--skill` flag** — selects which skill(s) to install (`uta` default, `agentic`, or `all`), independent of `--target`.
+
+### Changed
+- `skills/SKILL.md` moved to `skills/uta/SKILL.md`; the Agentic skill lives alongside it at `skills/agentic/SKILL.md`.
+
 ## [3.0.0] - 2026-06-18
 
 Full rewrite for the **Bitget Unified Trading Account (UTA / v3)** API. The version
